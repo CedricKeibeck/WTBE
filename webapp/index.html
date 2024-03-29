@@ -8,8 +8,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/MarkerCluster.css">
-        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
         <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
         <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
@@ -36,7 +34,6 @@
         <script src="js/labels.js"></script>
         <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
         <script src="js/leaflet-measure.js"></script>
-        <script src="js/leaflet.markercluster.js"></script>
         <script src="data/Tobedetermined_1.js"></script>
         <script src="data/DecommissionedorTobedecommissioned_2.js"></script>
         <script src="data/Existing_3.js"></script>
@@ -226,12 +223,8 @@
                 return L.marker(latlng, style_Tobedetermined_1_0(feature));
             },
         });
-        var cluster_Tobedetermined_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Tobedetermined_1.addLayer(layer_Tobedetermined_1);
-
         bounds_group.addLayer(layer_Tobedetermined_1);
-        cluster_Tobedetermined_1.addTo(map);
+        map.addLayer(layer_Tobedetermined_1);
         function pop_DecommissionedorTobedecommissioned_2(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -335,12 +328,8 @@
                 return L.marker(latlng, style_DecommissionedorTobedecommissioned_2_0(feature));
             },
         });
-        var cluster_DecommissionedorTobedecommissioned_2 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_DecommissionedorTobedecommissioned_2.addLayer(layer_DecommissionedorTobedecommissioned_2);
-
         bounds_group.addLayer(layer_DecommissionedorTobedecommissioned_2);
-        cluster_DecommissionedorTobedecommissioned_2.addTo(map);
+        map.addLayer(layer_DecommissionedorTobedecommissioned_2);
         function pop_Existing_3(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -444,12 +433,8 @@
                 return L.marker(latlng, style_Existing_3_0(feature));
             },
         });
-        var cluster_Existing_3 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Existing_3.addLayer(layer_Existing_3);
-
         bounds_group.addLayer(layer_Existing_3);
-        cluster_Existing_3.addTo(map);
+        map.addLayer(layer_Existing_3);
         function pop_Underconstruction_4(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -553,12 +538,8 @@
                 return L.marker(latlng, style_Underconstruction_4_0(feature));
             },
         });
-        var cluster_Underconstruction_4 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Underconstruction_4.addLayer(layer_Underconstruction_4);
-
         bounds_group.addLayer(layer_Underconstruction_4);
-        cluster_Underconstruction_4.addTo(map);
+        map.addLayer(layer_Underconstruction_4);
         function pop_MER_5(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -662,12 +643,8 @@
                 return L.marker(latlng, style_MER_5_0(feature));
             },
         });
-        var cluster_MER_5 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_MER_5.addLayer(layer_MER_5);
-
         bounds_group.addLayer(layer_MER_5);
-        cluster_MER_5.addTo(map);
+        map.addLayer(layer_MER_5);
         function pop_Permitwithdrawn_6(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -768,12 +745,8 @@
                 return L.marker(latlng, style_Permitwithdrawn_6_0(feature));
             },
         });
-        var cluster_Permitwithdrawn_6 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Permitwithdrawn_6.addLayer(layer_Permitwithdrawn_6);
-
         bounds_group.addLayer(layer_Permitwithdrawn_6);
-        cluster_Permitwithdrawn_6.addTo(map);
+        map.addLayer(layer_Permitwithdrawn_6);
         function pop_Permitrefused_7(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -877,12 +850,8 @@
                 return L.marker(latlng, style_Permitrefused_7_0(feature));
             },
         });
-        var cluster_Permitrefused_7 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Permitrefused_7.addLayer(layer_Permitrefused_7);
-
         bounds_group.addLayer(layer_Permitrefused_7);
-        cluster_Permitrefused_7.addTo(map);
+        map.addLayer(layer_Permitrefused_7);
         function pop_Permitappealed_8(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -986,12 +955,8 @@
                 return L.marker(latlng, style_Permitappealed_8_0(feature));
             },
         });
-        var cluster_Permitappealed_8 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Permitappealed_8.addLayer(layer_Permitappealed_8);
-
         bounds_group.addLayer(layer_Permitappealed_8);
-        cluster_Permitappealed_8.addTo(map);
+        map.addLayer(layer_Permitappealed_8);
         function pop_Permitgranted_9(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -1095,12 +1060,8 @@
                 return L.marker(latlng, style_Permitgranted_9_0(feature));
             },
         });
-        var cluster_Permitgranted_9 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Permitgranted_9.addLayer(layer_Permitgranted_9);
-
         bounds_group.addLayer(layer_Permitgranted_9);
-        cluster_Permitgranted_9.addTo(map);
+        map.addLayer(layer_Permitgranted_9);
         function pop_Permitrequested_10(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -1204,12 +1165,8 @@
                 return L.marker(latlng, style_Permitrequested_10_0(feature));
             },
         });
-        var cluster_Permitrequested_10 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Permitrequested_10.addLayer(layer_Permitrequested_10);
-
         bounds_group.addLayer(layer_Permitrequested_10);
-        cluster_Permitrequested_10.addTo(map);
+        map.addLayer(layer_Permitrequested_10);
         function pop_Permitpending_11(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -1313,12 +1270,8 @@
                 return L.marker(latlng, style_Permitpending_11_0(feature));
             },
         });
-        var cluster_Permitpending_11 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Permitpending_11.addLayer(layer_Permitpending_11);
-
         bounds_group.addLayer(layer_Permitpending_11);
-        cluster_Permitpending_11.addTo(map);
+        map.addLayer(layer_Permitpending_11);
         function pop_Permitinpreparation_12(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -1422,12 +1375,8 @@
                 return L.marker(latlng, style_Permitinpreparation_12_0(feature));
             },
         });
-        var cluster_Permitinpreparation_12 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Permitinpreparation_12.addLayer(layer_Permitinpreparation_12);
-
         bounds_group.addLayer(layer_Permitinpreparation_12);
-        cluster_Permitinpreparation_12.addTo(map);
+        map.addLayer(layer_Permitinpreparation_12);
             var title = new L.Control();
             title.onAdd = function (map) {
                 this._div = L.DomUtil.create('div', 'info');
@@ -1449,7 +1398,7 @@
         document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
         .title += 'Search for a place';
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/Permitinpreparation_12.png" /> Permit in preparation': cluster_Permitinpreparation_12,'<img src="legend/Permitpending_11.png" /> Permit pending': cluster_Permitpending_11,'<img src="legend/Permitrequested_10.png" /> Permit requested': cluster_Permitrequested_10,'<img src="legend/Permitgranted_9.png" /> Permit granted': cluster_Permitgranted_9,'<img src="legend/Permitappealed_8.png" /> Permit appealed': cluster_Permitappealed_8,'<img src="legend/Permitrefused_7.png" /> Permit refused': cluster_Permitrefused_7,'<img src="legend/Permitwithdrawn_6.png" /> Permit withdrawn': cluster_Permitwithdrawn_6,'<img src="legend/MER_5.png" /> MER': cluster_MER_5,'<img src="legend/Underconstruction_4.png" /> Under construction': cluster_Underconstruction_4,'<img src="legend/Existing_3.png" /> Existing': cluster_Existing_3,'<img src="legend/DecommissionedorTobedecommissioned_2.png" /> Decommissioned or To be decommissioned': cluster_DecommissionedorTobedecommissioned_2,'<img src="legend/Tobedetermined_1.png" /> To be determined': cluster_Tobedetermined_1,"OpenStreetMap - Belgium": layer_OpenStreetMapBelgium_0,}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/Permitinpreparation_12.png" /> Permit in preparation': layer_Permitinpreparation_12,'<img src="legend/Permitpending_11.png" /> Permit pending': layer_Permitpending_11,'<img src="legend/Permitrequested_10.png" /> Permit requested': layer_Permitrequested_10,'<img src="legend/Permitgranted_9.png" /> Permit granted': layer_Permitgranted_9,'<img src="legend/Permitappealed_8.png" /> Permit appealed': layer_Permitappealed_8,'<img src="legend/Permitrefused_7.png" /> Permit refused': layer_Permitrefused_7,'<img src="legend/Permitwithdrawn_6.png" /> Permit withdrawn': layer_Permitwithdrawn_6,'<img src="legend/MER_5.png" /> MER': layer_MER_5,'<img src="legend/Underconstruction_4.png" /> Under construction': layer_Underconstruction_4,'<img src="legend/Existing_3.png" /> Existing': layer_Existing_3,'<img src="legend/DecommissionedorTobedecommissioned_2.png" /> Decommissioned or To be decommissioned': layer_DecommissionedorTobedecommissioned_2,'<img src="legend/Tobedetermined_1.png" /> To be determined': layer_Tobedetermined_1,"OpenStreetMap - Belgium": layer_OpenStreetMapBelgium_0,}).addTo(map);
         setBounds();
         </script>
     </body>
