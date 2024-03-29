@@ -1,0 +1,1460 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 1003px;
+            height: 533px;
+        }
+        </style>
+        <title>Windturbines Belgium</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/Underconstruction_0.js"></script>
+        <script src="data/Tobedetermined_1.js"></script>
+        <script src="data/Project_2.js"></script>
+        <script src="data/Permitrequested_3.js"></script>
+        <script src="data/Permitrefused_4.js"></script>
+        <script src="data/Permitpending_5.js"></script>
+        <script src="data/Permitinpreparation_6.js"></script>
+        <script src="data/Permitgranted_7.js"></script>
+        <script src="data/Permitappealed_8.js"></script>
+        <script src="data/MER_9.js"></script>
+        <script src="data/Existing_10.js"></script>
+        <script src="data/DecommissionedorTobedecommissioned_11.js"></script>
+        <script src="data/Permitwithdrawn_12.js"></script>
+        <script src="data/Status_MER_13.js"></script>
+        <script src="data/Status_Permitappealed_14.js"></script>
+        <script src="data/Status_Permitgranted_15.js"></script>
+        <script src="data/Status_Permitinpreparation_16.js"></script>
+        <script src="data/Status_Permitpending_17.js"></script>
+        <script src="data/Status_Permitrefused_18.js"></script>
+        <script src="data/Status_Permitrequested_19.js"></script>
+        <script src="data/Status_Project_20.js"></script>
+        <script src="data/Status_Tobedetermined_21.js"></script>
+        <script src="data/Status_Underconstruction_22.js"></script>
+        <script src="data/Status_Existing_23.js"></script>
+        <script src="data/Status_DecommissionedorTobedecommissioned_24.js"></script>
+        <script src="data/Status_Permitwithdrawn_25.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[50.187755630805576,2.4942089328603916],[51.39899692618426,6.099573914364952]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        function pop_Underconstruction_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Underconstruction_0_0() {
+            return {
+                pane: 'pane_Underconstruction_0',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Underconstruction_0.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Underconstruction_0');
+        map.getPane('pane_Underconstruction_0').style.zIndex = 400;
+        map.getPane('pane_Underconstruction_0').style['mix-blend-mode'] = 'normal';
+        var layer_Underconstruction_0 = new L.geoJson(json_Underconstruction_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Underconstruction_0',
+            layerName: 'layer_Underconstruction_0',
+            pane: 'pane_Underconstruction_0',
+            onEachFeature: pop_Underconstruction_0,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Underconstruction_0_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Underconstruction_0);
+        map.addLayer(layer_Underconstruction_0);
+        function pop_Tobedetermined_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Tobedetermined_1_0() {
+            return {
+                pane: 'pane_Tobedetermined_1',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Tobedetermined_1.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Tobedetermined_1');
+        map.getPane('pane_Tobedetermined_1').style.zIndex = 401;
+        map.getPane('pane_Tobedetermined_1').style['mix-blend-mode'] = 'normal';
+        var layer_Tobedetermined_1 = new L.geoJson(json_Tobedetermined_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Tobedetermined_1',
+            layerName: 'layer_Tobedetermined_1',
+            pane: 'pane_Tobedetermined_1',
+            onEachFeature: pop_Tobedetermined_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Tobedetermined_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Tobedetermined_1);
+        map.addLayer(layer_Tobedetermined_1);
+        function pop_Project_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Project_2_0() {
+            return {
+                pane: 'pane_Project_2',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Project_2.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Project_2');
+        map.getPane('pane_Project_2').style.zIndex = 402;
+        map.getPane('pane_Project_2').style['mix-blend-mode'] = 'normal';
+        var layer_Project_2 = new L.geoJson(json_Project_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Project_2',
+            layerName: 'layer_Project_2',
+            pane: 'pane_Project_2',
+            onEachFeature: pop_Project_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Project_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Project_2);
+        map.addLayer(layer_Project_2);
+        function pop_Permitrequested_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Permitrequested_3_0() {
+            return {
+                pane: 'pane_Permitrequested_3',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Permitrequested_3.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Permitrequested_3');
+        map.getPane('pane_Permitrequested_3').style.zIndex = 403;
+        map.getPane('pane_Permitrequested_3').style['mix-blend-mode'] = 'normal';
+        var layer_Permitrequested_3 = new L.geoJson(json_Permitrequested_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Permitrequested_3',
+            layerName: 'layer_Permitrequested_3',
+            pane: 'pane_Permitrequested_3',
+            onEachFeature: pop_Permitrequested_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Permitrequested_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Permitrequested_3);
+        map.addLayer(layer_Permitrequested_3);
+        function pop_Permitrefused_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Permitrefused_4_0() {
+            return {
+                pane: 'pane_Permitrefused_4',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Permitrefused_4.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Permitrefused_4');
+        map.getPane('pane_Permitrefused_4').style.zIndex = 404;
+        map.getPane('pane_Permitrefused_4').style['mix-blend-mode'] = 'normal';
+        var layer_Permitrefused_4 = new L.geoJson(json_Permitrefused_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Permitrefused_4',
+            layerName: 'layer_Permitrefused_4',
+            pane: 'pane_Permitrefused_4',
+            onEachFeature: pop_Permitrefused_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Permitrefused_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Permitrefused_4);
+        map.addLayer(layer_Permitrefused_4);
+        function pop_Permitpending_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Permitpending_5_0() {
+            return {
+                pane: 'pane_Permitpending_5',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Permitpending_5.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Permitpending_5');
+        map.getPane('pane_Permitpending_5').style.zIndex = 405;
+        map.getPane('pane_Permitpending_5').style['mix-blend-mode'] = 'normal';
+        var layer_Permitpending_5 = new L.geoJson(json_Permitpending_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Permitpending_5',
+            layerName: 'layer_Permitpending_5',
+            pane: 'pane_Permitpending_5',
+            onEachFeature: pop_Permitpending_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Permitpending_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Permitpending_5);
+        map.addLayer(layer_Permitpending_5);
+        function pop_Permitinpreparation_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Permitinpreparation_6_0() {
+            return {
+                pane: 'pane_Permitinpreparation_6',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Permitinpreparation_6.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Permitinpreparation_6');
+        map.getPane('pane_Permitinpreparation_6').style.zIndex = 406;
+        map.getPane('pane_Permitinpreparation_6').style['mix-blend-mode'] = 'normal';
+        var layer_Permitinpreparation_6 = new L.geoJson(json_Permitinpreparation_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Permitinpreparation_6',
+            layerName: 'layer_Permitinpreparation_6',
+            pane: 'pane_Permitinpreparation_6',
+            onEachFeature: pop_Permitinpreparation_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Permitinpreparation_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Permitinpreparation_6);
+        map.addLayer(layer_Permitinpreparation_6);
+        function pop_Permitgranted_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Permitgranted_7_0() {
+            return {
+                pane: 'pane_Permitgranted_7',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Permitgranted_7.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Permitgranted_7');
+        map.getPane('pane_Permitgranted_7').style.zIndex = 407;
+        map.getPane('pane_Permitgranted_7').style['mix-blend-mode'] = 'normal';
+        var layer_Permitgranted_7 = new L.geoJson(json_Permitgranted_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Permitgranted_7',
+            layerName: 'layer_Permitgranted_7',
+            pane: 'pane_Permitgranted_7',
+            onEachFeature: pop_Permitgranted_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Permitgranted_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Permitgranted_7);
+        map.addLayer(layer_Permitgranted_7);
+        function pop_Permitappealed_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Permitappealed_8_0() {
+            return {
+                pane: 'pane_Permitappealed_8',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Permitappealed_8.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Permitappealed_8');
+        map.getPane('pane_Permitappealed_8').style.zIndex = 408;
+        map.getPane('pane_Permitappealed_8').style['mix-blend-mode'] = 'normal';
+        var layer_Permitappealed_8 = new L.geoJson(json_Permitappealed_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Permitappealed_8',
+            layerName: 'layer_Permitappealed_8',
+            pane: 'pane_Permitappealed_8',
+            onEachFeature: pop_Permitappealed_8,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Permitappealed_8_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Permitappealed_8);
+        map.addLayer(layer_Permitappealed_8);
+        function pop_MER_9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_MER_9_0() {
+            return {
+                pane: 'pane_MER_9',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/MER_9.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_MER_9');
+        map.getPane('pane_MER_9').style.zIndex = 409;
+        map.getPane('pane_MER_9').style['mix-blend-mode'] = 'normal';
+        var layer_MER_9 = new L.geoJson(json_MER_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_MER_9',
+            layerName: 'layer_MER_9',
+            pane: 'pane_MER_9',
+            onEachFeature: pop_MER_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_MER_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_MER_9);
+        map.addLayer(layer_MER_9);
+        function pop_Existing_10(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Existing_10_0() {
+            return {
+                pane: 'pane_Existing_10',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Existing_10.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Existing_10');
+        map.getPane('pane_Existing_10').style.zIndex = 410;
+        map.getPane('pane_Existing_10').style['mix-blend-mode'] = 'normal';
+        var layer_Existing_10 = new L.geoJson(json_Existing_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Existing_10',
+            layerName: 'layer_Existing_10',
+            pane: 'pane_Existing_10',
+            onEachFeature: pop_Existing_10,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Existing_10_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Existing_10);
+        map.addLayer(layer_Existing_10);
+        function pop_DecommissionedorTobedecommissioned_11(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_DecommissionedorTobedecommissioned_11_0() {
+            return {
+                pane: 'pane_DecommissionedorTobedecommissioned_11',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/DecommissionedorTobedecommissioned_11.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_DecommissionedorTobedecommissioned_11');
+        map.getPane('pane_DecommissionedorTobedecommissioned_11').style.zIndex = 411;
+        map.getPane('pane_DecommissionedorTobedecommissioned_11').style['mix-blend-mode'] = 'normal';
+        var layer_DecommissionedorTobedecommissioned_11 = new L.geoJson(json_DecommissionedorTobedecommissioned_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_DecommissionedorTobedecommissioned_11',
+            layerName: 'layer_DecommissionedorTobedecommissioned_11',
+            pane: 'pane_DecommissionedorTobedecommissioned_11',
+            onEachFeature: pop_DecommissionedorTobedecommissioned_11,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_DecommissionedorTobedecommissioned_11_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_DecommissionedorTobedecommissioned_11);
+        map.addLayer(layer_DecommissionedorTobedecommissioned_11);
+        function pop_Permitwithdrawn_12(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Permitwithdrawn_12_0() {
+            return {
+                pane: 'pane_Permitwithdrawn_12',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Permitwithdrawn_12.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Permitwithdrawn_12');
+        map.getPane('pane_Permitwithdrawn_12').style.zIndex = 412;
+        map.getPane('pane_Permitwithdrawn_12').style['mix-blend-mode'] = 'normal';
+        var layer_Permitwithdrawn_12 = new L.geoJson(json_Permitwithdrawn_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Permitwithdrawn_12',
+            layerName: 'layer_Permitwithdrawn_12',
+            pane: 'pane_Permitwithdrawn_12',
+            onEachFeature: pop_Permitwithdrawn_12,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Permitwithdrawn_12_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Permitwithdrawn_12);
+        map.addLayer(layer_Permitwithdrawn_12);
+        function pop_Status_MER_13(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_MER_13_0() {
+            return {
+                pane: 'pane_Status_MER_13',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_MER_13.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_MER_13');
+        map.getPane('pane_Status_MER_13').style.zIndex = 413;
+        map.getPane('pane_Status_MER_13').style['mix-blend-mode'] = 'normal';
+        var layer_Status_MER_13 = new L.geoJson(json_Status_MER_13, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_MER_13',
+            layerName: 'layer_Status_MER_13',
+            pane: 'pane_Status_MER_13',
+            onEachFeature: pop_Status_MER_13,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_MER_13_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_MER_13);
+        map.addLayer(layer_Status_MER_13);
+        function pop_Status_Permitappealed_14(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Permitappealed_14_0() {
+            return {
+                pane: 'pane_Status_Permitappealed_14',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Permitappealed_14.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Permitappealed_14');
+        map.getPane('pane_Status_Permitappealed_14').style.zIndex = 414;
+        map.getPane('pane_Status_Permitappealed_14').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Permitappealed_14 = new L.geoJson(json_Status_Permitappealed_14, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Permitappealed_14',
+            layerName: 'layer_Status_Permitappealed_14',
+            pane: 'pane_Status_Permitappealed_14',
+            onEachFeature: pop_Status_Permitappealed_14,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Permitappealed_14_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Permitappealed_14);
+        map.addLayer(layer_Status_Permitappealed_14);
+        function pop_Status_Permitgranted_15(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Permitgranted_15_0() {
+            return {
+                pane: 'pane_Status_Permitgranted_15',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Permitgranted_15.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Permitgranted_15');
+        map.getPane('pane_Status_Permitgranted_15').style.zIndex = 415;
+        map.getPane('pane_Status_Permitgranted_15').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Permitgranted_15 = new L.geoJson(json_Status_Permitgranted_15, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Permitgranted_15',
+            layerName: 'layer_Status_Permitgranted_15',
+            pane: 'pane_Status_Permitgranted_15',
+            onEachFeature: pop_Status_Permitgranted_15,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Permitgranted_15_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Permitgranted_15);
+        map.addLayer(layer_Status_Permitgranted_15);
+        function pop_Status_Permitinpreparation_16(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Permitinpreparation_16_0() {
+            return {
+                pane: 'pane_Status_Permitinpreparation_16',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Permitinpreparation_16.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Permitinpreparation_16');
+        map.getPane('pane_Status_Permitinpreparation_16').style.zIndex = 416;
+        map.getPane('pane_Status_Permitinpreparation_16').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Permitinpreparation_16 = new L.geoJson(json_Status_Permitinpreparation_16, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Permitinpreparation_16',
+            layerName: 'layer_Status_Permitinpreparation_16',
+            pane: 'pane_Status_Permitinpreparation_16',
+            onEachFeature: pop_Status_Permitinpreparation_16,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Permitinpreparation_16_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Permitinpreparation_16);
+        map.addLayer(layer_Status_Permitinpreparation_16);
+        function pop_Status_Permitpending_17(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Permitpending_17_0() {
+            return {
+                pane: 'pane_Status_Permitpending_17',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Permitpending_17.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Permitpending_17');
+        map.getPane('pane_Status_Permitpending_17').style.zIndex = 417;
+        map.getPane('pane_Status_Permitpending_17').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Permitpending_17 = new L.geoJson(json_Status_Permitpending_17, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Permitpending_17',
+            layerName: 'layer_Status_Permitpending_17',
+            pane: 'pane_Status_Permitpending_17',
+            onEachFeature: pop_Status_Permitpending_17,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Permitpending_17_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Permitpending_17);
+        map.addLayer(layer_Status_Permitpending_17);
+        function pop_Status_Permitrefused_18(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Permitrefused_18_0() {
+            return {
+                pane: 'pane_Status_Permitrefused_18',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Permitrefused_18.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Permitrefused_18');
+        map.getPane('pane_Status_Permitrefused_18').style.zIndex = 418;
+        map.getPane('pane_Status_Permitrefused_18').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Permitrefused_18 = new L.geoJson(json_Status_Permitrefused_18, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Permitrefused_18',
+            layerName: 'layer_Status_Permitrefused_18',
+            pane: 'pane_Status_Permitrefused_18',
+            onEachFeature: pop_Status_Permitrefused_18,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Permitrefused_18_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Permitrefused_18);
+        map.addLayer(layer_Status_Permitrefused_18);
+        function pop_Status_Permitrequested_19(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Permitrequested_19_0() {
+            return {
+                pane: 'pane_Status_Permitrequested_19',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Permitrequested_19.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Permitrequested_19');
+        map.getPane('pane_Status_Permitrequested_19').style.zIndex = 419;
+        map.getPane('pane_Status_Permitrequested_19').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Permitrequested_19 = new L.geoJson(json_Status_Permitrequested_19, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Permitrequested_19',
+            layerName: 'layer_Status_Permitrequested_19',
+            pane: 'pane_Status_Permitrequested_19',
+            onEachFeature: pop_Status_Permitrequested_19,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Permitrequested_19_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Permitrequested_19);
+        map.addLayer(layer_Status_Permitrequested_19);
+        function pop_Status_Project_20(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Project_20_0() {
+            return {
+                pane: 'pane_Status_Project_20',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Project_20.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Project_20');
+        map.getPane('pane_Status_Project_20').style.zIndex = 420;
+        map.getPane('pane_Status_Project_20').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Project_20 = new L.geoJson(json_Status_Project_20, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Project_20',
+            layerName: 'layer_Status_Project_20',
+            pane: 'pane_Status_Project_20',
+            onEachFeature: pop_Status_Project_20,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Project_20_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Project_20);
+        map.addLayer(layer_Status_Project_20);
+        function pop_Status_Tobedetermined_21(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Tobedetermined_21_0() {
+            return {
+                pane: 'pane_Status_Tobedetermined_21',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Tobedetermined_21.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Tobedetermined_21');
+        map.getPane('pane_Status_Tobedetermined_21').style.zIndex = 421;
+        map.getPane('pane_Status_Tobedetermined_21').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Tobedetermined_21 = new L.geoJson(json_Status_Tobedetermined_21, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Tobedetermined_21',
+            layerName: 'layer_Status_Tobedetermined_21',
+            pane: 'pane_Status_Tobedetermined_21',
+            onEachFeature: pop_Status_Tobedetermined_21,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Tobedetermined_21_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Tobedetermined_21);
+        map.addLayer(layer_Status_Tobedetermined_21);
+        function pop_Status_Underconstruction_22(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Underconstruction_22_0() {
+            return {
+                pane: 'pane_Status_Underconstruction_22',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Underconstruction_22.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Underconstruction_22');
+        map.getPane('pane_Status_Underconstruction_22').style.zIndex = 422;
+        map.getPane('pane_Status_Underconstruction_22').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Underconstruction_22 = new L.geoJson(json_Status_Underconstruction_22, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Underconstruction_22',
+            layerName: 'layer_Status_Underconstruction_22',
+            pane: 'pane_Status_Underconstruction_22',
+            onEachFeature: pop_Status_Underconstruction_22,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Underconstruction_22_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Underconstruction_22);
+        map.addLayer(layer_Status_Underconstruction_22);
+        function pop_Status_Existing_23(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Existing_23_0() {
+            return {
+                pane: 'pane_Status_Existing_23',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Existing_23.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Existing_23');
+        map.getPane('pane_Status_Existing_23').style.zIndex = 423;
+        map.getPane('pane_Status_Existing_23').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Existing_23 = new L.geoJson(json_Status_Existing_23, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Existing_23',
+            layerName: 'layer_Status_Existing_23',
+            pane: 'pane_Status_Existing_23',
+            onEachFeature: pop_Status_Existing_23,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Existing_23_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Existing_23);
+        map.addLayer(layer_Status_Existing_23);
+        function pop_Status_DecommissionedorTobedecommissioned_24(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_DecommissionedorTobedecommissioned_24_0() {
+            return {
+                pane: 'pane_Status_DecommissionedorTobedecommissioned_24',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_DecommissionedorTobedecommissioned_24.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_DecommissionedorTobedecommissioned_24');
+        map.getPane('pane_Status_DecommissionedorTobedecommissioned_24').style.zIndex = 424;
+        map.getPane('pane_Status_DecommissionedorTobedecommissioned_24').style['mix-blend-mode'] = 'normal';
+        var layer_Status_DecommissionedorTobedecommissioned_24 = new L.geoJson(json_Status_DecommissionedorTobedecommissioned_24, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_DecommissionedorTobedecommissioned_24',
+            layerName: 'layer_Status_DecommissionedorTobedecommissioned_24',
+            pane: 'pane_Status_DecommissionedorTobedecommissioned_24',
+            onEachFeature: pop_Status_DecommissionedorTobedecommissioned_24,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_DecommissionedorTobedecommissioned_24_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_DecommissionedorTobedecommissioned_24);
+        map.addLayer(layer_Status_DecommissionedorTobedecommissioned_24);
+        function pop_Status_Permitwithdrawn_25(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Status_Permitwithdrawn_25_0() {
+            return {
+                pane: 'pane_Status_Permitwithdrawn_25',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Status_Permitwithdrawn_25.svg',
+            iconSize: [22.799999999999997, 22.799999999999997]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Status_Permitwithdrawn_25');
+        map.getPane('pane_Status_Permitwithdrawn_25').style.zIndex = 425;
+        map.getPane('pane_Status_Permitwithdrawn_25').style['mix-blend-mode'] = 'normal';
+        var layer_Status_Permitwithdrawn_25 = new L.geoJson(json_Status_Permitwithdrawn_25, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Status_Permitwithdrawn_25',
+            layerName: 'layer_Status_Permitwithdrawn_25',
+            pane: 'pane_Status_Permitwithdrawn_25',
+            onEachFeature: pop_Status_Permitwithdrawn_25,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Status_Permitwithdrawn_25_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Status_Permitwithdrawn_25);
+        map.addLayer(layer_Status_Permitwithdrawn_25);
+        map.createPane('pane_OpenStreetMapBelgium_26');
+        map.getPane('pane_OpenStreetMapBelgium_26').style.zIndex = 426;
+        var layer_OpenStreetMapBelgium_26 = L.tileLayer('https://tile.osm.be/osmbe/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMapBelgium_26',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_OpenStreetMapBelgium_26;
+        map.addLayer(layer_OpenStreetMapBelgium_26);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Windturbines Belgium</h2>';
+            };
+            title.addTo(map);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{"OpenStreetMap - Belgium": layer_OpenStreetMapBelgium_26,'<img src="legend/Status_Permitwithdrawn_25.png" /> Status_Permit withdrawn': layer_Status_Permitwithdrawn_25,'<img src="legend/Status_DecommissionedorTobedecommissioned_24.png" /> Status_Decommissioned or To be decommissioned': layer_Status_DecommissionedorTobedecommissioned_24,'<img src="legend/Status_Existing_23.png" /> Status_Existing': layer_Status_Existing_23,'<img src="legend/Status_Underconstruction_22.png" /> Status_Under construction': layer_Status_Underconstruction_22,'<img src="legend/Status_Tobedetermined_21.png" /> Status_To be determined': layer_Status_Tobedetermined_21,'<img src="legend/Status_Project_20.png" /> Status_Project': layer_Status_Project_20,'<img src="legend/Status_Permitrequested_19.png" /> Status_Permit requested': layer_Status_Permitrequested_19,'<img src="legend/Status_Permitrefused_18.png" /> Status_Permit refused': layer_Status_Permitrefused_18,'<img src="legend/Status_Permitpending_17.png" /> Status_Permit pending': layer_Status_Permitpending_17,'<img src="legend/Status_Permitinpreparation_16.png" /> Status_Permit in preparation': layer_Status_Permitinpreparation_16,'<img src="legend/Status_Permitgranted_15.png" /> Status_Permit granted': layer_Status_Permitgranted_15,'<img src="legend/Status_Permitappealed_14.png" /> Status_Permit appealed': layer_Status_Permitappealed_14,'<img src="legend/Status_MER_13.png" /> Status_MER': layer_Status_MER_13,'<img src="legend/Permitwithdrawn_12.png" /> Permit withdrawn': layer_Permitwithdrawn_12,'<img src="legend/DecommissionedorTobedecommissioned_11.png" /> Decommissioned or To be decommissioned': layer_DecommissionedorTobedecommissioned_11,'<img src="legend/Existing_10.png" /> Existing': layer_Existing_10,'<img src="legend/MER_9.png" /> MER': layer_MER_9,'<img src="legend/Permitappealed_8.png" /> Permit appealed': layer_Permitappealed_8,'<img src="legend/Permitgranted_7.png" /> Permit granted': layer_Permitgranted_7,'<img src="legend/Permitinpreparation_6.png" /> Permit in preparation': layer_Permitinpreparation_6,'<img src="legend/Permitpending_5.png" /> Permit pending': layer_Permitpending_5,'<img src="legend/Permitrefused_4.png" /> Permit refused': layer_Permitrefused_4,'<img src="legend/Permitrequested_3.png" /> Permit requested': layer_Permitrequested_3,'<img src="legend/Project_2.png" /> Project': layer_Project_2,'<img src="legend/Tobedetermined_1.png" /> To be determined': layer_Tobedetermined_1,'<img src="legend/Underconstruction_0.png" /> Under construction': layer_Underconstruction_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
